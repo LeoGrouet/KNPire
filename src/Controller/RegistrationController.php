@@ -5,6 +5,7 @@ namespace App\Controller;
 // ...
 
 use App\Entity\User;
+use App\Form\UserSignInType;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,48 +16,33 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
-    public function index(UserPasswordHasherInterface $passwordHasher) // Response
-    {
-        // ... e.g. get the user data from a registration form
-        $user = new User();
-        // TODO : Give password data to this variable 
-        $plaintextPassword = " ";
-
-        // hash the password (based on the security.yaml config for the $user class)
-        $hashedPassword = $passwordHasher->hashPassword(
-            $user,
-            $plaintextPassword
-        );
-        $user->setPassword($hashedPassword);
-
-        // ...
-    }
-
     #[Route('/signin', name: 'app_signin')]
-    public function signin(Request $request, EntityManagerInterface $em): Response
+    public function signin(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
-
-        // J'instancie un nouveau formulaire via RecipeType qui remplira ma recette 
-        $form = $this->createForm(UserType::class);
+        $form = $this->createForm(UserSignInType::class);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // Je crée un nouveau user vide
             $data = $form->getData();
-            $user = new User();
-            $user->setEmail($data["Email"]);
-            $user->setUsername($data["Username"]);
-            $user->setPassword($data["Password"]);
+            $user = new User(
+                $data["username"],
+                $data["email"],
+                $data["password"]
+            );
             $em->persist($user);
+
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $data["password"]
+            );
+            $user->setPassword($hashedPassword);
             $em->flush();
-            $this->addFlash('Succes', 'Nouveau User crée');
+            $this->addFlash('Succes', 'Nouveau User créé');
             return $this->redirectToRoute('home');
         }
         return $this->render('log/signin.html.twig', [
             'form' => $form
-        ]);
-        return $this->render('log/login.html.twig', [
-            'controller_name' => 'LoginController',
         ]);
     }
 }

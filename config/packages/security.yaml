@@ -9,7 +9,13 @@ security:
       security: false
     main:
       lazy: true
-      provider: users_in_memory
+      provider: app_user_provider
+    secured_area:
+      form_login:
+        login_path: app_login
+        check_path: app_login
+        enable_csrf: true
+
 when@test:
   security:
     password_hashers:
