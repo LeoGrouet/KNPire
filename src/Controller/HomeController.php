@@ -11,12 +11,11 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
-        $test = "coucou";
-        return $this->render(
-            'index.html.twig',
-            [
-                'test' => $test
-            ]
-        );
+        // $acces = $this->denyAccessUnlessGranted("ROLE_USER");
+        // if ($this->$acces = false) {
+        //     $this->redirectToRoute("/signin");
+        // }
+
+        return $this->render('index.html.twig');
     }
 }
