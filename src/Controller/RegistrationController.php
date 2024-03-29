@@ -2,11 +2,8 @@
 
 namespace App\Controller;
 
-// ...
-
 use App\Entity\User;
 use App\Form\UserSignInType;
-use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/signin', name: 'app_signin')]
+    #[Route('/signin', name: 'app_signin',  methods: ["POST", "GET"])]
     public function signin(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserSignInType::class);

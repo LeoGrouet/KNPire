@@ -14,7 +14,7 @@ final class Version20240326161835 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return " Création de l'entity User-> ID auto, email, role (autogénéré de base en ROLE_USER) et password ";
     }
 
     public function up(Schema $schema): void
