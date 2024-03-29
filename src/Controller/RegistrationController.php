@@ -23,18 +23,17 @@ class RegistrationController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // Je crée un nouveau user vide
             $data = $form->getData();
             $user = new User(
                 $data["username"],
                 $data["email"],
-                $data["password"]
+                $plaintextPassword = $data["password"]
             );
             $em->persist($user);
 
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
-                $data["password"]
+                $plaintextPassword
             );
             $user->setPassword($hashedPassword);
             $em->flush();
