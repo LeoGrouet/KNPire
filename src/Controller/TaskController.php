@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +27,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/edit/{id}', name: 'app_task_edit',  methods: ["GET", "POST"])]
-    public function edit(TaskRepository $taskrepo, $id, Task $task, Request $request, EntityManagerInterface $em): Response
+    public function edit(Task $task, Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
@@ -64,7 +63,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/add', name: 'app_task_add',  methods: ["GET", "POST"])]
-    public function add(Request $request, TaskRepository $taskrepo, EntityManagerInterface $em): Response
+    public function add(Request $request, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 

@@ -37,6 +37,7 @@ class Task
     public function setTaskname(string $taskname): self
     {
         $this->taskname = $taskname;
+
         return $this;
     }
 
@@ -48,6 +49,7 @@ class Task
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -59,6 +61,7 @@ class Task
     public function setPoints(string $points): self
     {
         $this->points = $points;
+
         return $this;
     }
 
