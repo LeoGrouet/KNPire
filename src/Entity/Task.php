@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
     #[ORM\Id]
@@ -33,14 +34,32 @@ class Task
         return $this->id;
     }
 
+    public function setTaskname(string $taskname): self
+    {
+        $this->taskname = $taskname;
+        return $this;
+    }
+
     public function getTaskname(): string
     {
         return $this->taskname;
     }
 
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+        return $this;
+    }
+
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function setPoints(string $points): self
+    {
+        $this->points = $points;
+        return $this;
     }
 
     public function getPoints(): int

@@ -1,0 +1,14 @@
+{% include "partials/header.html.twig" %}
+{% include 'partials/flash.html.twig'%}
+{% include 'partials/navbar.html.twig'%}
+
+
+{% block body %}
+            <div>
+                {{ form_start(form)}}
+                {{ form_end(form)}}
+            </div>
+{% endblock %}
+
+        
+{% include "partials/footer.html.twig" %}
