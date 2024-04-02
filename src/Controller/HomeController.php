@@ -14,8 +14,6 @@ class HomeController extends AbstractController
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
-        $user = $this->getUser();
-
         return $this->render('index.html.twig', []);
     }
 }
