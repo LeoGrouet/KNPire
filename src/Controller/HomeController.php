@@ -8,15 +8,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'home')]
+
+    #[Route('/', name: 'home',  methods: ["GET"])]
     public function index(): Response
     {
-        $test = "coucou";
-        return $this->render(
-            'index.html.twig',
-            [
-                'test' => $test
-            ]
-        );
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
+        $user = $this->getUser();
+
+        return $this->render('index.html.twig', []);
     }
 }
