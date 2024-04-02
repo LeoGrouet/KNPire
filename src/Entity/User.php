@@ -35,21 +35,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
     }
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
     public function getUsername(): string
     {
         return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
     }
 
     public function getEmail(): string
@@ -57,18 +45,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
     }
-
 
     public function getRoles(): array
     {
@@ -77,13 +57,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     public function getPassword(): string
@@ -97,7 +70,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
     public function eraseCredentials(): void
     {

@@ -26,15 +26,14 @@ class RegistrationController extends AbstractController
                 $data["email"],
                 $plaintextPassword = $data["password"]
             );
-            $em->persist($user);
-
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $plaintextPassword
             );
             $user->setPassword($hashedPassword);
+            $em->persist($user);
             $em->flush();
-            $this->addFlash('Succes', 'Nouveau User créé');
+            $this->addFlash('success', 'Nouveau User créé');
             return $this->redirectToRoute('home');
         }
         return $this->render('log/signin.html.twig', [
