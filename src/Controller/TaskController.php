@@ -14,6 +14,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class TaskController extends AbstractController
 {
 
+    public function __construct(private EntityManagerInterface $em)
+    {
+    }
+
     #[Route('/task', name: 'app_task',  methods: ["GET"])]
     public function index(TaskRepository $taskrepo): Response
     {
@@ -27,7 +31,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/edit/{id}', name: 'app_task_edit',  methods: ["GET", "POST"])]
-    public function edit(Task $task, Request $request, EntityManagerInterface $em): Response
+    public function edit(Task $task, Request $request): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
@@ -38,9 +42,10 @@ class TaskController extends AbstractController
             $task->setTaskname($data->getTaskname());
             $task->setDescription($data->getDescription());
             $task->setPoints($data->getPoints());
-            $em->persist($task);
-            $em->flush();
+            $this->em->persist($task);
+            $this->em->flush();
             $this->addFlash('success', 'Tâche modifiée');
+
             return $this->redirectToRoute('app_task');
         }
 
@@ -51,19 +56,19 @@ class TaskController extends AbstractController
     }
 
     #[Route('/task/delete/{id}', name: 'app_task_delete',  methods: ["GET", "POST"])]
-    public function delete(TaskRepository $taskrepo, int $id, EntityManagerInterface $em): Response
+    public function delete(TaskRepository $taskrepo, int $id): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
         $task = $taskrepo->find($id);
-        $em->remove($task);
-        $em->flush();
+        $this->em->remove($task);
+        $this->em->flush();
 
         return $this->redirectToRoute('app_task');
     }
 
     #[Route('/task/add', name: 'app_task_add',  methods: ["GET", "POST"])]
-    public function add(Request $request, EntityManagerInterface $em): Response
+    public function add(Request $request): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
@@ -77,11 +82,13 @@ class TaskController extends AbstractController
                 $data["description"],
                 $data["points"],
             );
-            $em->persist($task);
-            $em->flush();
+            $this->em->persist($task);
+            $this->em->flush();
             $this->addFlash('success', 'Nouvelle tâche créé');
+
             return $this->redirectToRoute('app_task');
         }
+
         return $this->render('task/add.html.twig', [
             'form' => $form
         ]);
