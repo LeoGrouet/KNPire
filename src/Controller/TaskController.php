@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class TaskController extends AbstractController
 {
 
-    public function __construct(private EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
     }
 
@@ -42,8 +42,8 @@ class TaskController extends AbstractController
             $task->setTaskname($data->getTaskname());
             $task->setDescription($data->getDescription());
             $task->setPoints($data->getPoints());
-            $this->em->persist($task);
-            $this->em->flush();
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
             $this->addFlash('success', 'Tâche modifiée');
 
             return $this->redirectToRoute('app_task');
@@ -61,8 +61,8 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted("ROLE_USER");
 
         $task = $taskrepo->find($id);
-        $this->em->remove($task);
-        $this->em->flush();
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
 
         return $this->redirectToRoute('app_task');
     }
@@ -82,8 +82,8 @@ class TaskController extends AbstractController
                 $data["description"],
                 $data["points"],
             );
-            $this->em->persist($task);
-            $this->em->flush();
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
             $this->addFlash('success', 'Nouvelle tâche créé');
 
             return $this->redirectToRoute('app_task');

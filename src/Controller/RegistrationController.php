@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/signin', name: 'app_signin',  methods: ["POST", "GET"])]
-    public function signin(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
+    public function signin(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createForm(UserSignInType::class);
 
@@ -31,8 +31,8 @@ class RegistrationController extends AbstractController
                 $plaintextPassword
             );
             $user->setPassword($hashedPassword);
-            $em->persist($user);
-            $em->flush();
+            $entityManager->persist($user);
+            $entityManager->flush();
             $this->addFlash('success', 'Nouveau User créé');
             return $this->redirectToRoute('home');
         }
