@@ -11,7 +11,7 @@ final class Version20240327093548 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return " Ajout du champ Username dans l'entity User ";
+        return " Add Username field in User entity ";
     }
 
     public function up(Schema $schema): void
