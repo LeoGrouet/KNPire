@@ -34,10 +34,8 @@ class RegistrationController extends AbstractController
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Nouveau User créé');
-
             return $this->redirectToRoute('home');
         }
-
         return $this->render('log/signin.html.twig', [
             'form' => $form
         ]);
