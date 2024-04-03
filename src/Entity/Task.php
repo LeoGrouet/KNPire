@@ -14,17 +14,17 @@ class Task
     private int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
-    private string $taskname;
+    private string $name;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string')]
     private string $description;
 
     #[ORM\Column(type: 'integer')]
     private int $points;
 
-    public function __construct(string $taskname, string $description, int $points)
+    public function __construct(string $name, string $description, int $points)
     {
-        $this->taskname = $taskname;
+        $this->name = $name;
         $this->description = $description;
         $this->points = $points;
     }
@@ -34,16 +34,16 @@ class Task
         return $this->id;
     }
 
-    public function setTaskname(string $taskname): self
+    public function setname(string $name): self
     {
-        $this->taskname = $taskname;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getTaskname(): string
+    public function getname(): string
     {
-        return $this->taskname;
+        return $this->name;
     }
 
     public function setDescription(string $description): self
@@ -58,7 +58,7 @@ class Task
         return $this->description;
     }
 
-    public function setPoints(string $points): self
+    public function setPoints(int $points): self
     {
         $this->points = $points;
 

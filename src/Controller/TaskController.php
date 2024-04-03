@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/task')]
 class TaskController extends AbstractController
 {
 
@@ -18,7 +19,7 @@ class TaskController extends AbstractController
     {
     }
 
-    #[Route('/task', name: 'app_task',  methods: ["GET"])]
+    #[Route('/', name: 'app_task',  methods: ["GET"])]
     public function index(TaskRepository $taskrepo): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
@@ -30,7 +31,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/edit/{id}', name: 'app_task_edit',  methods: ["GET", "POST"])]
+    #[Route('/edit/{id}', name: 'app_task_edit',  methods: ["GET", "POST"])]
     public function edit(Task $task, Request $request): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
@@ -38,10 +39,6 @@ class TaskController extends AbstractController
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $task->setTaskname($data->getTaskname());
-            $task->setDescription($data->getDescription());
-            $task->setPoints($data->getPoints());
             $this->entityManager->persist($task);
             $this->entityManager->flush();
             $this->addFlash('success', 'Tâche modifiée');
@@ -55,19 +52,20 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/task/delete/{id}', name: 'app_task_delete',  methods: ["GET", "POST"])]
-    public function delete(TaskRepository $taskrepo, int $id): Response
+    #[Route('/delete/{id}', name: 'app_task_delete',  methods: ["GET", "POST"])]
+    public function delete(Task $task): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
-        $task = $taskrepo->find($id);
-        $this->entityManager->remove($task);
-        $this->entityManager->flush();
+        if ($task !== null) {
+            $this->entityManager->remove($task);
+            $this->entityManager->flush();
+        }
 
         return $this->redirectToRoute('app_task');
     }
 
-    #[Route('/task/add', name: 'app_task_add',  methods: ["GET", "POST"])]
+    #[Route('/add', name: 'app_task_add',  methods: ["GET", "POST"])]
     public function add(Request $request): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
@@ -78,7 +76,7 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             $task = new Task(
-                $data["taskname"],
+                $data["name"],
                 $data["description"],
                 $data["points"],
             );

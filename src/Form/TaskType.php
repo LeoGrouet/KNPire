@@ -15,7 +15,7 @@ class TaskType extends AbstractType
     {
         $builder
             ->add(
-                'taskname',
+                'name',
                 TextType::class
             )
             ->add(
