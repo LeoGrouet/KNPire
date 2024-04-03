@@ -1,15 +1,11 @@
 {% include "partials/header.html.twig" %}
 {% include 'partials/flash.html.twig'%}
 {% include 'partials/navbar.html.twig'%}
-
-
-{% block body %}
-        {{task.taskname}}
+    {% block body %}
+        {{task.name}}
             <div>
                 {{ form_start(form)}}
                 {{ form_end(form)}}
             </div>
-{% endblock %}
-
-        
+    {% endblock %}  
 {% include "partials/footer.html.twig" %}
