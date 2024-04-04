@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,11 +13,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/task', name: "app_task_")]
 class TaskController extends AbstractController
 {
-
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
-    }
-
     #[Route('/', name: 'home',  methods: ["GET"])]
     public function index(TaskRepository $taskrepo): Response
     {
@@ -32,17 +26,15 @@ class TaskController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'edit',  methods: ["GET", "POST"])]
-    public function edit(Task $task, Request $request): Response
+    public function edit(Task $task, Request $request, TaskRepository $taskrepo): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($task);
-            $this->entityManager->flush();
+            $taskrepo->upsert($task);
             $this->addFlash('success', 'Tâche modifiée');
-
             return $this->redirectToRoute('app_task_home');
         }
 
@@ -53,20 +45,19 @@ class TaskController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete',  methods: ["GET", "POST"])]
-    public function delete(Task $task): Response
+    public function delete(Task $task, TaskRepository $taskrepo): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
         if ($task !== null) {
-            $this->entityManager->remove($task);
-            $this->entityManager->flush();
+            $taskrepo->delete($task);
         }
 
         return $this->redirectToRoute('app_task_home');
     }
 
     #[Route('/add', name: 'add',  methods: ["GET", "POST"])]
-    public function add(Request $request): Response
+    public function add(Request $request, TaskRepository $taskrepo): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
@@ -80,8 +71,7 @@ class TaskController extends AbstractController
                 $data["description"],
                 $data["points"],
             );
-            $this->entityManager->persist($task);
-            $this->entityManager->flush();
+            $taskrepo->upsert($task);
             $this->addFlash('success', 'Nouvelle tâche créé');
 
             return $this->redirectToRoute('app_task_home');
