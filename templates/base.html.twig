@@ -13,6 +13,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
         {% endblock %}
         {% block javascripts %}
+        <script src="/js/flashMessageDisplay.js" defer></script>
         {% endblock %}
     </head>
 <body>
@@ -54,7 +55,7 @@
       </div>
     </nav>
     {% for type, message in app.flashes %}
-    <div class="alert alert-{{ type }}">
+    <div class="alert alert-{{ type }} flash-message">
         {{ message | join('. ')}}
     </div>
 {% endfor %}     
@@ -63,10 +64,7 @@
 
         {% block body %}
                 {% block task %} {% endblock %}
-                {% block taskadd %} {% endblock %}
-                {% block edittask %} {% endblock %}  
-                {% block login %} {% endblock %}  
-                {% block signin %} {% endblock %}
+                {% block log %} {% endblock %}  
                 {% block index %} {% endblock %}
         {% endblock %}
 </body>
