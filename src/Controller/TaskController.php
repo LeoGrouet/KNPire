@@ -52,7 +52,7 @@ class TaskController extends AbstractController
         if ($task !== null) {
             $taskrepo->delete($task);
         }
-
+        $this->addFlash('success', 'Tâche supprimée');
         return $this->redirectToRoute('app_task_home');
     }
 
