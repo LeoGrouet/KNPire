@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,18 +16,61 @@ use Symfony\Component\Routing\Attribute\Route;
 class TaskController extends AbstractController
 {
     #[Route('/', name: 'home',  methods: ["GET"])]
-    public function index(TaskRepository $taskrepo): Response
+    public function index(TaskRepository $taskrepo, Security $security): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
 
+        $user = $security->getUser();
         $tasks = $taskrepo->findAll();
 
         return $this->render('task/task.html.twig', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'user' => $user
         ]);
     }
 
-    #[Route('/edit/{id}', name: 'edit',  methods: ["GET", "POST"])]
+    #[Route('/{team}', name: 'team',  methods: ["GET"])]
+    public function teamTask(TaskRepository $taskrepo, Security $security): Response
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
+        $user = $security->getUser();
+
+        if ($user instanceof User) {
+            $userTeam = $user->getTeam();
+        }
+
+        $tasks = $taskrepo->findByUserteam($userTeam);
+
+        return $this->render('task/task.html.twig', [
+            'tasks' => $tasks,
+            'user' => $user
+        ]);
+    }
+
+    #[Route('/{team}/{username}', name: 'self',  methods: ["GET"])]
+    public function userTask(TaskRepository $taskrepo, Security $security): Response
+    {
+        $this->denyAccessUnlessGranted("ROLE_USER");
+
+        $user = $security->getUser();
+
+        if ($user instanceof User) {
+            $userId = $user->getId();
+        }
+
+        $tasks = $taskrepo->findByUserId($userId);
+
+        return $this->render('task/task.html.twig', [
+            'tasks' => $tasks,
+            'user' => $user
+
+        ]);
+    }
+
+
+
+    #[Route('/edit/{id}', name: 'edit',  methods: ["GET", "POST"], priority: 1)]
     public function edit(Task $task, Request $request, TaskRepository $taskrepo): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
@@ -44,11 +89,10 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'delete',  methods: ["GET", "POST"])]
+    #[Route('/delete/{id}', name: 'delete',  methods: ["GET", "POST"], priority: 2)]
     public function delete(Task $task, TaskRepository $taskrepo): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
-
         if ($task !== null) {
             $taskrepo->delete($task);
         }
@@ -56,13 +100,13 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('app_task_home');
     }
 
-    #[Route('/add', name: 'add',  methods: ["GET", "POST"])]
-    public function add(Request $request, TaskRepository $taskrepo): Response
+    #[Route('/add', name: 'add',  methods: ["GET", "POST"], priority: 1)]
+    public function add(Request $request, TaskRepository $taskrepo, Security $security): Response
     {
         $this->denyAccessUnlessGranted("ROLE_USER");
+        $user = $security->getUser();
 
         $form = $this->createForm(TaskType::class);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
@@ -71,6 +115,7 @@ class TaskController extends AbstractController
                 $data["description"],
                 $data["points"],
             );
+            $task->setUser($user);
             $taskrepo->upsert($task);
             $this->addFlash('success', 'Nouvelle tâche créé');
 

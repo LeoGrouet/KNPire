@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+    {% block profil %}
+        <div>
+        <h4>Pseudo</h4>
+            <label>{{ user.username }}</label>
+        <h4>Email</h4>
+            <label>{{ user.email }}</label>
+        <h4>Team</h4>
+            <label>{{ user.team }}</label>
+        </div> 
+    {% endblock %}

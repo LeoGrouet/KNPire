@@ -3,11 +3,11 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use App\Entity\Task;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToMany;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\Mapping\OneToOne;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -29,20 +29,50 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    #[OneToOne(targetEntity: Task::class)]
-    private Task $task;
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    private string $team;
 
-    public function __construct(string $username, string $email, string $password)
+    public function __construct(string $username, string $email, string $password, string $team)
     {
         $this->username = $username;
         $this->email = $email;
         $this->roles = ["ROLE_USER"];
         $this->password = $password;
+        $this->team = $team;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername($username): self
+    {
+        $this->username = $username;
+
+        return $this;
     }
 
     public function getUserIdentifier(): string
     {
         return $this->email;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email): self
+    {
+        $this->email = $email;
+
+        return $this;
     }
 
     public function getRoles(): array
@@ -64,6 +94,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getTeam(): string
+    {
+        return $this->team;
     }
 
     public function eraseCredentials(): void

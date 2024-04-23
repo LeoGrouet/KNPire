@@ -13,6 +13,26 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findByUserId(int $id)
+    {
+        return $this->createQueryBuilder('task')
+            ->join('task.user', 'u')
+            ->where('u.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByUserteam(string $team)
+    {
+        return $this->createQueryBuilder('task')
+            ->join('task.user', 'u')
+            ->where('u.team = :team')
+            ->setParameter('team', $team)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function upsert(Task $task)
     {
         $this->getEntityManager()->persist($task);

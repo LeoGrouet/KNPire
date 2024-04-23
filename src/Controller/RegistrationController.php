@@ -24,7 +24,8 @@ class RegistrationController extends AbstractController
             $user = new User(
                 $data["username"],
                 $data["email"],
-                $plaintextPassword = $data["password"]
+                $plaintextPassword = $data["password"],
+                $data["team"]
             );
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\OneToOne;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -21,6 +23,10 @@ class Task
 
     #[ORM\Column(type: 'integer')]
     private int $points;
+
+    #[OneToOne(targetEntity: User::class)]
+    #[JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private User|null $user = null;
 
     public function __construct(string $name, string $description, int $points)
     {
@@ -68,5 +74,16 @@ class Task
     public function getPoints(): int
     {
         return $this->points;
+    }
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }

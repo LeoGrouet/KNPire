@@ -1,6 +1,10 @@
 {% extends "base.html.twig" %}
 {% block title %}Tâches{% endblock %}
 {% block task %}
+<div>
+        <li><a href="{{ path ('app_task_team', {team: user.team}) }}">Team tasks</a></li>
+        <li><a href="{{ path ('app_task_self', {team: user.team, username: user.username}) }}">My tasks</a></li>
+</div>
             {% if tasks %}
             <table class="table table-striped">
         <thead>
@@ -28,7 +32,7 @@
                     </tr>
                 {% endfor %}
                 {% else %}
-                    <div> {{ message }}</div>
+                    <div> Aucune tâches </div>
                     <a href="{{ path ('app_task_add') }}"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--ic" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="green" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m5 11h-4v4h-2v-4H7v-2h4V7h2v4h4z"></path></svg></a>
             {% endif %}
         </tbody>

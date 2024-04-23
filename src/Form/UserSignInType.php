@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -26,6 +27,16 @@ class UserSignInType extends AbstractType
             ->add(
                 'password',
                 PasswordType::class
+            )
+            ->add(
+                'team',
+                ChoiceType::class,
+                [
+                    'choices' => [
+                        'Caen' => "Caen",
+                        'Nantes' => "Nantes"
+                    ]
+                ]
             )
             ->add(
                 'save',
